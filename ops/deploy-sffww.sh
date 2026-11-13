@@ -16,14 +16,17 @@ git fetch origin main
 git reset --hard origin/main
 commit=$(git rev-parse HEAD)
 
-# Only these public assets are published, never .git, workflows or operator files.
-for asset in index.html style.css logo.png; do
+# Publish root-level pages/styles/images, never .git, workflows or operator files.
+shopt -s nullglob
+assets=( *.html *.css *.png )
+test -s index.html
+for asset in "${assets[@]}"; do
     test -s "$asset"
     test ! -L "$asset"
 done
 release=$(mktemp -d "/var/www/sffww/releases/${commit}.XXXXXXXX")
 chmod 0755 "$release"
-install -m 0644 index.html style.css logo.png "$release/"
+install -m 0644 "${assets[@]}" "$release/"
 
 # Swap the complete website into place on the same filesystem.
 # Prior releases remain available for manual rollback.
