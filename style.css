@@ -139,8 +139,13 @@ h1, h2 {
 		flex-wrap: wrap;
 		gap: 10px 20px;
 
+		padding-inline: 10px;
+
 		border-bottom: 2px solid #28221f;
 		padding-bottom: 8px;
+
+		background: #e6ddcf;
+		box-shadow: 0 -10px 0 #e6ddcf;
 	}
 
 	.site::before {
