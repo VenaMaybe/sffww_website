@@ -1,0 +1,32 @@
+<VirtualHost *:443>
+    ServerName sffww.com
+    DocumentRoot /var/www/sffww/current
+    DirectoryIndex index.html
+    SSLEngine On
+    SSLCertificateFile /etc/letsencrypt/live/sffww.com/fullchain.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/sffww.com/privkey.pem
+    Include /etc/letsencrypt/options-ssl-apache.conf
+    <Directory /var/www/sffww>
+        Options FollowSymLinks
+        AllowOverride None
+        Require all granted
+    </Directory>
+    ErrorLog ${APACHE_LOG_DIR}/sffww-error.log
+    CustomLog ${APACHE_LOG_DIR}/sffww-access.log combined
+</VirtualHost>
+
+<VirtualHost *:80>
+    ServerName sffww.com
+    # Challenges live outside the rotating website releases.
+    DocumentRoot /var/www/sffww-acme
+    <Directory /var/www/sffww-acme>
+        Options None
+        AllowOverride None
+        Require all granted
+    </Directory>
+    RewriteEngine On
+    RewriteCond %{REQUEST_URI} !^/\.well-known/acme-challenge/
+    RewriteRule ^ https://sffww.com%{REQUEST_URI} [R=301,L,NE]
+    ErrorLog ${APACHE_LOG_DIR}/sffww-error.log
+    CustomLog ${APACHE_LOG_DIR}/sffww-access.log combined
+</VirtualHost>
